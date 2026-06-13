@@ -1,0 +1,14 @@
+const RC = window.Recharts;
+export default RC;
+export const PieChart = RC.PieChart;
+export const Pie = RC.Pie;
+export const Cell = RC.Cell;
+export const Tooltip = RC.Tooltip;
+export const Legend = RC.Legend;
+export const ResponsiveContainer = RC.ResponsiveContainer;
+export const LineChart = RC.LineChart;
+export const Line = RC.Line;
+export const XAxis = RC.XAxis;
+export const YAxis = RC.YAxis;
+export const CartesianGrid = RC.CartesianGrid;
+export const Dot = RC.Dot;
