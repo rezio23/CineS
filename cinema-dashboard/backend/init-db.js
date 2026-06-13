@@ -122,21 +122,155 @@ async function run() {
       [9, 'D2', 'STANDARD'], [10, 'E4', 'IMAX'],
     ];
 
-    const bookings = [
-      [4, '2026-06-08 20:00:00', 204, 303, 'AEON 3', 'On Counter', 'Confirmed'],
-      [5, '2026-06-09 10:00:00', 205, 304, 'SORYA', 'Online', 'Pending'],
-      [6, '2026-06-10 15:30:00', 206, 305, 'SORYA', 'On Counter', 'Confirmed'],
-      [7, '2026-06-11 18:00:00', 207, 306, 'AEON 2', 'Online', 'Cancelled'],
-      [8, '2026-06-12 21:00:00', 208, 307, 'CENTRAL', 'Online', 'Confirmed'],
-      [9, '2026-06-13 13:00:00', 209, 308, 'CENTRAL', 'On Counter', 'Pending'],
-      [10, '2026-06-14 17:00:00', 210, 309, 'AEON 1', 'Online', 'Confirmed'],
+    // 105 bookings — Jan-Jun 2026 plus 10 per day for current week
+    const bookingDefs = [
+      ['2026-06-13', '21:00', 201, 301, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-02-27', '15:30', 202, 302, 'AEON 2', 'Online', 'Confirmed'],
+      ['2026-04-19', '21:00', 203, 303, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-03-01', '19:00', 204, 304, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-02-20', '14:00', 205, 305, 'AEON 2', 'Online', 'Cancelled'],
+      ['2026-04-25', '14:00', 206, 306, 'CENTRAL', 'On Counter', 'Confirmed'],
+      ['2026-04-19', '19:00', 207, 307, 'CENTRAL', 'On Counter', 'Confirmed'],
+      ['2026-03-28', '14:00', 208, 308, 'SORYA', 'On Counter', 'Pending'],
+      ['2026-04-02', '14:00', 209, 309, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-04-28', '10:00', 210, 310, 'SORYA', 'Online', 'Pending'],
+      ['2026-05-22', '15:30', 201, 301, 'CENTRAL', 'On Counter', 'Confirmed'],
+      ['2026-02-19', '21:00', 202, 302, 'SORYA', 'Online', 'Pending'],
+      ['2026-02-28', '10:00', 203, 303, 'CENTRAL', 'On Counter', 'Cancelled'],
+      ['2026-04-08', '20:00', 204, 304, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-04-05', '10:00', 205, 305, 'AEON 1', 'Online', 'Pending'],
+      ['2026-01-19', '10:00', 206, 306, 'AEON 2', 'Online', 'Pending'],
+      ['2026-04-29', '15:30', 207, 307, 'SORYA', 'On Counter', 'Confirmed'],
+      ['2026-03-25', '15:30', 208, 308, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-04-13', '15:30', 209, 309, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-03-22', '21:00', 210, 310, 'AEON 2', 'Online', 'Pending'],
+      ['2026-04-28', '19:00', 201, 301, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-05-24', '15:30', 202, 302, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-04-13', '15:30', 203, 303, 'SORYA', 'On Counter', 'Confirmed'],
+      ['2026-05-07', '14:00', 204, 304, 'CENTRAL', 'On Counter', 'Confirmed'],
+      ['2026-06-10', '21:00', 205, 305, 'SORYA', 'On Counter', 'Cancelled'],
+      ['2026-04-08', '19:00', 206, 306, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-01-03', '14:00', 207, 307, 'CENTRAL', 'On Counter', 'Cancelled'],
+      ['2026-03-29', '20:00', 208, 308, 'SORYA', 'On Counter', 'Pending'],
+      ['2026-04-27', '14:00', 209, 309, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-01-28', '10:00', 210, 310, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-04-06', '14:00', 201, 301, 'SORYA', 'Online', 'Pending'],
+      ['2026-03-24', '19:00', 202, 302, 'CENTRAL', 'On Counter', 'Cancelled'],
+      ['2026-03-20', '15:30', 203, 303, 'CENTRAL', 'Online', 'Cancelled'],
+      ['2026-01-21', '21:00', 204, 304, 'AEON 1', 'On Counter', 'Cancelled'],
+      ['2026-02-02', '15:30', 205, 305, 'AEON 1', 'On Counter', 'Pending'],
+      ['2026-06-08', '14:00', 206, 306, 'SORYA', 'Online', 'Cancelled'],
+      ['2026-06-08', '21:00', 207, 307, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-08', '10:00', 208, 308, 'AEON 3', 'Online', 'Confirmed'],
+      ['2026-06-08', '15:30', 209, 309, 'AEON 2', 'Online', 'Cancelled'],
+      ['2026-06-08', '15:30', 210, 310, 'SORYA', 'Online', 'Confirmed'],
+      ['2026-06-08', '15:30', 201, 301, 'AEON 3', 'Online', 'Confirmed'],
+      ['2026-06-08', '14:00', 202, 302, 'CENTRAL', 'Online', 'Confirmed'],
+      ['2026-06-08', '21:00', 203, 303, 'SORYA', 'Online', 'Cancelled'],
+      ['2026-06-08', '14:00', 204, 304, 'AEON 2', 'On Counter', 'Cancelled'],
+      ['2026-06-08', '14:00', 205, 305, 'AEON 3', 'On Counter', 'Confirmed'],
+      ['2026-06-09', '20:00', 206, 306, 'AEON 2', 'On Counter', 'Pending'],
+      ['2026-06-09', '21:00', 207, 307, 'AEON 3', 'On Counter', 'Cancelled'],
+      ['2026-06-09', '19:00', 208, 308, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-06-09', '10:00', 209, 309, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-09', '20:00', 210, 310, 'AEON 2', 'Online', 'Confirmed'],
+      ['2026-06-09', '10:00', 201, 301, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-06-09', '10:00', 202, 302, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-09', '14:00', 203, 303, 'AEON 3', 'On Counter', 'Confirmed'],
+      ['2026-06-09', '20:00', 204, 304, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-09', '19:00', 205, 305, 'SORYA', 'Online', 'Confirmed'],
+      ['2026-06-10', '10:00', 206, 306, 'SORYA', 'On Counter', 'Pending'],
+      ['2026-06-10', '19:00', 207, 307, 'SORYA', 'Online', 'Cancelled'],
+      ['2026-06-10', '21:00', 208, 308, 'AEON 1', 'Online', 'Pending'],
+      ['2026-06-10', '21:00', 209, 309, 'AEON 3', 'Online', 'Confirmed'],
+      ['2026-06-10', '14:00', 210, 310, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-10', '19:00', 201, 301, 'AEON 2', 'On Counter', 'Pending'],
+      ['2026-06-10', '14:00', 202, 302, 'AEON 1', 'On Counter', 'Cancelled'],
+      ['2026-06-10', '10:00', 203, 303, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-06-10', '14:00', 204, 304, 'AEON 2', 'On Counter', 'Pending'],
+      ['2026-06-10', '19:00', 205, 305, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-11', '14:00', 206, 306, 'SORYA', 'Online', 'Pending'],
+      ['2026-06-11', '15:30', 207, 307, 'SORYA', 'On Counter', 'Pending'],
+      ['2026-06-11', '21:00', 208, 308, 'CENTRAL', 'On Counter', 'Confirmed'],
+      ['2026-06-11', '14:00', 209, 309, 'AEON 3', 'Online', 'Confirmed'],
+      ['2026-06-11', '20:00', 210, 310, 'CENTRAL', 'Online', 'Cancelled'],
+      ['2026-06-11', '15:30', 201, 301, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-06-11', '19:00', 202, 302, 'CENTRAL', 'Online', 'Confirmed'],
+      ['2026-06-11', '20:00', 203, 303, 'AEON 1', 'Online', 'Confirmed'],
+      ['2026-06-11', '20:00', 204, 304, 'AEON 1', 'Online', 'Pending'],
+      ['2026-06-11', '10:00', 205, 305, 'CENTRAL', 'Online', 'Cancelled'],
+      ['2026-06-12', '20:00', 206, 306, 'AEON 1', 'Online', 'Pending'],
+      ['2026-06-12', '21:00', 207, 307, 'CENTRAL', 'On Counter', 'Pending'],
+      ['2026-06-12', '14:00', 208, 308, 'AEON 3', 'Online', 'Pending'],
+      ['2026-06-12', '19:00', 209, 309, 'AEON 2', 'On Counter', 'Pending'],
+      ['2026-06-12', '15:30', 210, 310, 'AEON 1', 'Online', 'Pending'],
+      ['2026-06-12', '20:00', 201, 301, 'CENTRAL', 'Online', 'Confirmed'],
+      ['2026-06-12', '20:00', 202, 302, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-12', '15:30', 203, 303, 'AEON 1', 'Online', 'Pending'],
+      ['2026-06-12', '15:30', 204, 304, 'AEON 2', 'On Counter', 'Cancelled'],
+      ['2026-06-12', '21:00', 205, 305, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-13', '20:00', 206, 306, 'AEON 3', 'Online', 'Confirmed'],
+      ['2026-06-13', '15:30', 207, 307, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-06-13', '20:00', 208, 308, 'AEON 2', 'On Counter', 'Pending'],
+      ['2026-06-13', '20:00', 209, 309, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-13', '21:00', 210, 310, 'AEON 3', 'On Counter', 'Pending'],
+      ['2026-06-13', '10:00', 201, 301, 'AEON 1', 'On Counter', 'Pending'],
+      ['2026-06-13', '10:00', 202, 302, 'AEON 1', 'On Counter', 'Confirmed'],
+      ['2026-06-13', '21:00', 203, 303, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-13', '19:00', 204, 304, 'CENTRAL', 'On Counter', 'Cancelled'],
+      ['2026-06-13', '10:00', 205, 305, 'AEON 1', 'Online', 'Cancelled'],
+      ['2026-06-14', '14:00', 206, 306, 'CENTRAL', 'Online', 'Pending'],
+      ['2026-06-14', '20:00', 207, 307, 'CENTRAL', 'Online', 'Pending'],
+      ['2026-06-14', '14:00', 208, 308, 'AEON 1', 'On Counter', 'Pending'],
+      ['2026-06-14', '10:00', 209, 309, 'AEON 3', 'Online', 'Cancelled'],
+      ['2026-06-14', '14:00', 210, 310, 'AEON 1', 'On Counter', 'Cancelled'],
+      ['2026-06-14', '19:00', 201, 301, 'CENTRAL', 'Online', 'Confirmed'],
+      ['2026-06-14', '14:00', 202, 302, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-14', '14:00', 203, 303, 'AEON 3', 'On Counter', 'Cancelled'],
+      ['2026-06-14', '21:00', 204, 304, 'AEON 2', 'On Counter', 'Confirmed'],
+      ['2026-06-14', '21:00', 205, 305, 'AEON 1', 'On Counter', 'Confirmed'],
     ];
 
-    const details = [
-      [4, 8, 'Hall A', 'M006', '2026-06-08', '20:00', '3D', 10.00],
-      [5, 9, 'Hall B', 'M007', '2026-06-09', '10:00', '2D', 8.00],
-      [6, 10, 'IMAX Hall', 'M008', '2026-06-10', '15:30', 'IMAX', 12.00],
-    ];
+    const movieIds = ['M006', 'M007', 'M008', 'M009', 'M010'];
+    const halls = ['Hall A', 'Hall B', 'IMAX Hall'];
+    const screens = ['2D', '3D', 'IMAX'];
+    const screenPrices = { '2D': 8, '3D': 10, 'IMAX': 12 };
+
+    const bookings = [];
+    const details = [];
+
+    bookingDefs.forEach((def, idx) => {
+      const bookingId = idx + 1;
+      const [date, time, customerId, staffNo, location, bookingBy, status] = def;
+      bookings.push([
+        bookingId,
+        `${date} ${time}:00`,
+        customerId,
+        staffNo,
+        location,
+        bookingBy,
+        status,
+      ]);
+
+      // 3 detail rows per booking, rotating movie / hall / screen
+      for (let seatOffset = 0; seatOffset < 3; seatOffset++) {
+        const seatNum = ((idx * 3 + seatOffset) % 10) + 1;
+        const movieId = movieIds[idx % movieIds.length];
+        const hall = halls[(idx + seatOffset) % halls.length];
+        const screen = screens[seatOffset % screens.length];
+        const price = screenPrices[screen];
+        details.push([
+          bookingId,
+          seatNum,
+          hall,
+          movieId,
+          date,
+          time,
+          screen,
+          price,
+        ]);
+      }
+    });
 
     const insertMany = async (table, rows) => {
       const cols = rows[0].length;

@@ -16,7 +16,7 @@ const PALETTE = [
   "#E0EBFF",
 ];
 
-const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, value }) => {
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
@@ -31,7 +31,7 @@ const renderLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) =>
       fontSize={11}
       fontWeight={700}
     >
-      {`${(percent * 100).toFixed(0)}%`}
+      {value}
     </text>
   );
 };

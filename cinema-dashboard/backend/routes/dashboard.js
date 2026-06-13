@@ -34,37 +34,73 @@ function generateDetailRows() {
   let bookingId = 1;
   let seatNum = 1;
 
-  // All bookings are constrained to the current week: 8 Jun - 14 Jun 2026
-  const weekDays = [
-    '2026-06-08', '2026-06-09', '2026-06-10', '2026-06-11',
-    '2026-06-12', '2026-06-13', '2026-06-14',
+  // Fallback data mirrors the seeded dataset:
+  // 35 Jan-Jun bookings + 10 bookings per day for current week (8-14 Jun)
+  const bookingDefs = [
+    ['2026-06-13', '21:00'], ['2026-02-27', '15:30'], ['2026-04-19', '21:00'],
+    ['2026-03-01', '19:00'], ['2026-02-20', '14:00'], ['2026-04-25', '14:00'],
+    ['2026-04-19', '19:00'], ['2026-03-28', '14:00'], ['2026-04-02', '14:00'],
+    ['2026-04-28', '10:00'], ['2026-05-22', '15:30'], ['2026-02-19', '21:00'],
+    ['2026-02-28', '10:00'], ['2026-04-08', '20:00'], ['2026-04-05', '10:00'],
+    ['2026-01-19', '10:00'], ['2026-04-29', '15:30'], ['2026-03-25', '15:30'],
+    ['2026-04-13', '15:30'], ['2026-03-22', '21:00'], ['2026-04-28', '19:00'],
+    ['2026-05-24', '15:30'], ['2026-04-13', '15:30'], ['2026-05-07', '14:00'],
+    ['2026-06-10', '21:00'], ['2026-04-08', '19:00'], ['2026-01-03', '14:00'],
+    ['2026-03-29', '20:00'], ['2026-04-27', '14:00'], ['2026-01-28', '10:00'],
+    ['2026-04-06', '14:00'], ['2026-03-24', '19:00'], ['2026-03-20', '15:30'],
+    ['2026-01-21', '21:00'], ['2026-02-02', '15:30'],
+    ['2026-06-08', '14:00'], ['2026-06-08', '21:00'], ['2026-06-08', '10:00'],
+    ['2026-06-08', '15:30'], ['2026-06-08', '15:30'], ['2026-06-08', '15:30'],
+    ['2026-06-08', '14:00'], ['2026-06-08', '21:00'], ['2026-06-08', '14:00'],
+    ['2026-06-08', '14:00'],
+    ['2026-06-09', '20:00'], ['2026-06-09', '21:00'], ['2026-06-09', '19:00'],
+    ['2026-06-09', '10:00'], ['2026-06-09', '20:00'], ['2026-06-09', '10:00'],
+    ['2026-06-09', '10:00'], ['2026-06-09', '14:00'], ['2026-06-09', '20:00'],
+    ['2026-06-09', '19:00'],
+    ['2026-06-10', '10:00'], ['2026-06-10', '19:00'], ['2026-06-10', '21:00'],
+    ['2026-06-10', '21:00'], ['2026-06-10', '14:00'], ['2026-06-10', '19:00'],
+    ['2026-06-10', '14:00'], ['2026-06-10', '10:00'], ['2026-06-10', '14:00'],
+    ['2026-06-10', '19:00'],
+    ['2026-06-11', '14:00'], ['2026-06-11', '15:30'], ['2026-06-11', '21:00'],
+    ['2026-06-11', '14:00'], ['2026-06-11', '20:00'], ['2026-06-11', '15:30'],
+    ['2026-06-11', '19:00'], ['2026-06-11', '20:00'], ['2026-06-11', '20:00'],
+    ['2026-06-11', '10:00'],
+    ['2026-06-12', '20:00'], ['2026-06-12', '21:00'], ['2026-06-12', '14:00'],
+    ['2026-06-12', '19:00'], ['2026-06-12', '15:30'], ['2026-06-12', '20:00'],
+    ['2026-06-12', '20:00'], ['2026-06-12', '15:30'], ['2026-06-12', '15:30'],
+    ['2026-06-12', '21:00'],
+    ['2026-06-13', '20:00'], ['2026-06-13', '15:30'], ['2026-06-13', '20:00'],
+    ['2026-06-13', '20:00'], ['2026-06-13', '21:00'], ['2026-06-13', '10:00'],
+    ['2026-06-13', '10:00'], ['2026-06-13', '21:00'], ['2026-06-13', '19:00'],
+    ['2026-06-13', '10:00'],
+    ['2026-06-14', '14:00'], ['2026-06-14', '20:00'], ['2026-06-14', '14:00'],
+    ['2026-06-14', '10:00'], ['2026-06-14', '14:00'], ['2026-06-14', '19:00'],
+    ['2026-06-14', '14:00'], ['2026-06-14', '21:00'], ['2026-06-14', '21:00'],
+    ['2026-06-14', '21:00'],
   ];
 
-  weekDays.forEach((date, dayIdx) => {
-    const sessionsForDay = SESSIONS.slice(dayIdx % 2, dayIdx % 2 + 3);
-    sessionsForDay.forEach((time, sessionIdx) => {
-      const movie = MOVIES[(bookingId + sessionIdx) % MOVIES.length];
-      const hall = HALLS[(bookingId + sessionIdx) % HALLS.length];
-      const seatType = getSeatType((bookingId + sessionIdx) % SEAT_TYPES.length);
-      const screen = seatType === 'IMAX' ? 'IMAX' : (sessionIdx % 2 === 0 ? '2D' : '3D');
-      const price = screen === 'IMAX' ? movie.priceImax : screen === '3D' ? movie.price3D : movie.price2D;
-      const ticketCount = 2;
+  bookingDefs.forEach((def, idx) => {
+    const [date, time] = def;
+    const movie = MOVIES[idx % MOVIES.length];
+    const hall = HALLS[idx % HALLS.length];
+    const screen = SCREENS[idx % SCREENS.length];
+    const price = screen === 'IMAX' ? movie.priceImax : screen === '3D' ? movie.price3D : movie.price2D;
+    const ticketCount = 3;
 
-      for (let t = 0; t < ticketCount; t++) {
-        rows.push({
-          booking_id: bookingId,
-          seat_num: seatNum,
-          hall_name: hall,
-          movie_id: movie.id,
-          show_date: date,
-          show_time: time,
-          screen,
-          price: Number(price.toFixed(2)),
-        });
-        seatNum++;
-      }
-      bookingId++;
-    });
+    for (let t = 0; t < ticketCount; t++) {
+      rows.push({
+        booking_id: bookingId,
+        seat_num: seatNum,
+        hall_name: hall,
+        movie_id: movie.id,
+        show_date: date,
+        show_time: time,
+        screen,
+        price: Number(price.toFixed(2)),
+      });
+      seatNum++;
+    }
+    bookingId++;
   });
   return rows;
 }
@@ -138,13 +174,11 @@ function filterDetailsByDate(session, date) {
 function aggregateDaily(details) {
   const groups = {};
   details.forEach(r => {
-    const d = new Date(r.show_date + 'T00:00:00');
-    const key = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-    groups[key] = (groups[key] || 0) + 1;
+    groups[r.show_time] = (groups[r.show_time] || 0) + 1;
   });
   return Object.entries(groups)
     .map(([LABEL, VALUE]) => ({ LABEL, VALUE }))
-    .sort((a, b) => new Date(a.LABEL + ' 2026') - new Date(b.LABEL + ' 2026'));
+    .sort((a, b) => a.LABEL.localeCompare(b.LABEL));
 }
 
 function aggregateMonthlyIncome(details) {
@@ -275,6 +309,7 @@ router.get('/charts/static', async (req, res) => {
 // ============================================================
 // GET /api/charts/daily?session=&date=
 // ============================================================
+// Returns booking counts grouped by session (show_time) for the selected date.
 router.get('/charts/daily', async (req, res) => {
   try {
     const { session, date } = req.query;
@@ -285,12 +320,12 @@ router.get('/charts/daily', async (req, res) => {
     if (date)    { conditions.push('d.show_date = TO_DATE(:showDate, \'YYYY-MM-DD\')'); binds.showDate = date; }
 
     const rows = await query(`
-      SELECT TO_CHAR(show_date, 'DD Mon') AS LABEL,
-             COUNT(*) AS VALUE
+      SELECT d.show_time AS LABEL,
+             COUNT(*)    AS VALUE
       FROM Detail d
       WHERE ${conditions.join(' AND ')}
-      GROUP BY TO_CHAR(show_date, 'DD Mon'), show_date
-      ORDER BY MIN(show_date)
+      GROUP BY d.show_time
+      ORDER BY d.show_time
     `, binds);
 
     res.json(rows);
