@@ -29,54 +29,31 @@ function getScreen(seatType) {
   return rowIndex >> 1 ? '3D' : '2D';
 }
 
+function generateMonthBookings(year, month, count) {
+  const times = ['10:00', '14:00', '15:30', '19:00', '20:00', '21:00'];
+  const bookings = [];
+  for (let i = 0; i < count; i++) {
+    const day = (i % 28) + 1;
+    const time = times[i % times.length];
+    bookings.push([`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`, time]);
+  }
+  return bookings;
+}
+
 function generateDetailRows() {
   const rows = [];
   let bookingId = 1;
   let seatNum = 1;
 
   // Fallback data mirrors the seeded dataset:
-  // 35 Jan-Jun bookings + 10 bookings per day for current week (8-14 Jun)
+  // Monthly booking targets: Jan 56, Feb 45, Mar 36, Apr 65, May 26, Jun 67
   const bookingDefs = [
-    ['2026-06-13', '21:00'], ['2026-02-27', '15:30'], ['2026-04-19', '21:00'],
-    ['2026-03-01', '19:00'], ['2026-02-20', '14:00'], ['2026-04-25', '14:00'],
-    ['2026-04-19', '19:00'], ['2026-03-28', '14:00'], ['2026-04-02', '14:00'],
-    ['2026-04-28', '10:00'], ['2026-05-22', '15:30'], ['2026-02-19', '21:00'],
-    ['2026-02-28', '10:00'], ['2026-04-08', '20:00'], ['2026-04-05', '10:00'],
-    ['2026-01-19', '10:00'], ['2026-04-29', '15:30'], ['2026-03-25', '15:30'],
-    ['2026-04-13', '15:30'], ['2026-03-22', '21:00'], ['2026-04-28', '19:00'],
-    ['2026-05-24', '15:30'], ['2026-04-13', '15:30'], ['2026-05-07', '14:00'],
-    ['2026-06-10', '21:00'], ['2026-04-08', '19:00'], ['2026-01-03', '14:00'],
-    ['2026-03-29', '20:00'], ['2026-04-27', '14:00'], ['2026-01-28', '10:00'],
-    ['2026-04-06', '14:00'], ['2026-03-24', '19:00'], ['2026-03-20', '15:30'],
-    ['2026-01-21', '21:00'], ['2026-02-02', '15:30'],
-    ['2026-06-08', '14:00'], ['2026-06-08', '21:00'], ['2026-06-08', '10:00'],
-    ['2026-06-08', '15:30'], ['2026-06-08', '15:30'], ['2026-06-08', '15:30'],
-    ['2026-06-08', '14:00'], ['2026-06-08', '21:00'], ['2026-06-08', '14:00'],
-    ['2026-06-08', '14:00'],
-    ['2026-06-09', '20:00'], ['2026-06-09', '21:00'], ['2026-06-09', '19:00'],
-    ['2026-06-09', '10:00'], ['2026-06-09', '20:00'], ['2026-06-09', '10:00'],
-    ['2026-06-09', '10:00'], ['2026-06-09', '14:00'], ['2026-06-09', '20:00'],
-    ['2026-06-09', '19:00'],
-    ['2026-06-10', '10:00'], ['2026-06-10', '19:00'], ['2026-06-10', '21:00'],
-    ['2026-06-10', '21:00'], ['2026-06-10', '14:00'], ['2026-06-10', '19:00'],
-    ['2026-06-10', '14:00'], ['2026-06-10', '10:00'], ['2026-06-10', '14:00'],
-    ['2026-06-10', '19:00'],
-    ['2026-06-11', '14:00'], ['2026-06-11', '15:30'], ['2026-06-11', '21:00'],
-    ['2026-06-11', '14:00'], ['2026-06-11', '20:00'], ['2026-06-11', '15:30'],
-    ['2026-06-11', '19:00'], ['2026-06-11', '20:00'], ['2026-06-11', '20:00'],
-    ['2026-06-11', '10:00'],
-    ['2026-06-12', '20:00'], ['2026-06-12', '21:00'], ['2026-06-12', '14:00'],
-    ['2026-06-12', '19:00'], ['2026-06-12', '15:30'], ['2026-06-12', '20:00'],
-    ['2026-06-12', '20:00'], ['2026-06-12', '15:30'], ['2026-06-12', '15:30'],
-    ['2026-06-12', '21:00'],
-    ['2026-06-13', '20:00'], ['2026-06-13', '15:30'], ['2026-06-13', '20:00'],
-    ['2026-06-13', '20:00'], ['2026-06-13', '21:00'], ['2026-06-13', '10:00'],
-    ['2026-06-13', '10:00'], ['2026-06-13', '21:00'], ['2026-06-13', '19:00'],
-    ['2026-06-13', '10:00'],
-    ['2026-06-14', '14:00'], ['2026-06-14', '20:00'], ['2026-06-14', '14:00'],
-    ['2026-06-14', '10:00'], ['2026-06-14', '14:00'], ['2026-06-14', '19:00'],
-    ['2026-06-14', '14:00'], ['2026-06-14', '21:00'], ['2026-06-14', '21:00'],
-    ['2026-06-14', '21:00'],
+    ...generateMonthBookings(2026, 1, 56),
+    ...generateMonthBookings(2026, 2, 45),
+    ...generateMonthBookings(2026, 3, 36),
+    ...generateMonthBookings(2026, 4, 65),
+    ...generateMonthBookings(2026, 5, 26),
+    ...generateMonthBookings(2026, 6, 67),
   ];
 
   bookingDefs.forEach((def, idx) => {
@@ -174,10 +151,11 @@ function filterDetailsByDate(session, date) {
 function aggregateDaily(details) {
   const groups = {};
   details.forEach(r => {
-    groups[r.show_time] = (groups[r.show_time] || 0) + 1;
+    if (!groups[r.show_time]) groups[r.show_time] = new Set();
+    groups[r.show_time].add(r.booking_id);
   });
   return Object.entries(groups)
-    .map(([LABEL, VALUE]) => ({ LABEL, VALUE }))
+    .map(([LABEL, VALUE]) => ({ LABEL, VALUE: VALUE.size }))
     .sort((a, b) => a.LABEL.localeCompare(b.LABEL));
 }
 
@@ -198,10 +176,11 @@ function aggregateMonthlyBooking(details) {
   details.forEach(r => {
     const d = new Date(r.show_date + 'T00:00:00');
     const LABEL = d.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
-    groups[LABEL] = (groups[LABEL] || 0) + 1;
+    if (!groups[LABEL]) groups[LABEL] = new Set();
+    groups[LABEL].add(r.booking_id);
   });
   return Object.entries(groups)
-    .map(([LABEL, VALUE]) => ({ LABEL, VALUE }))
+    .map(([LABEL, VALUE]) => ({ LABEL, VALUE: VALUE.size }))
     .sort((a, b) => new Date('1 ' + a.LABEL) - new Date('1 ' + b.LABEL));
 }
 
@@ -285,10 +264,10 @@ router.get('/charts/static', async (req, res) => {
         ORDER BY VALUE DESC
       `),
       query(`
-        SELECT m.movie_title AS LABEL, COUNT(*) AS VALUE
+        SELECT m.title AS LABEL, COUNT(*) AS VALUE
         FROM Detail d
         JOIN Movie m ON d.movie_id = m.movie_id
-        GROUP BY m.movie_title
+        GROUP BY m.title
         ORDER BY VALUE DESC
       `),
       query(`
@@ -321,7 +300,7 @@ router.get('/charts/daily', async (req, res) => {
 
     const rows = await query(`
       SELECT d.show_time AS LABEL,
-             COUNT(*)    AS VALUE
+             COUNT(DISTINCT d.booking_id) AS VALUE
       FROM Detail d
       WHERE ${conditions.join(' AND ')}
       GROUP BY d.show_time
@@ -381,7 +360,7 @@ router.get('/charts/monthly-booking', async (req, res) => {
 
     const rows = await query(`
       SELECT TO_CHAR(d.show_date, 'Mon YYYY')  AS LABEL,
-             COUNT(*)                          AS VALUE
+             COUNT(DISTINCT d.booking_id)     AS VALUE
       FROM Detail d
       WHERE ${where}
       GROUP BY TO_CHAR(d.show_date, 'Mon YYYY'),

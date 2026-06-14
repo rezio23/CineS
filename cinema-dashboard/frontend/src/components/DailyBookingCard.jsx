@@ -3,9 +3,13 @@ import DonutChart from './DonutChart';
 import FilterBar  from './FilterBar';
 import { fetchDaily } from '../api/dashboard';
 
+function todayStr() {
+  return new Date().toISOString().split('T')[0];
+}
+
 export default function DailyBookingCard({ sessions }) {
   const [session, setSession] = useState('');
-  const [date,    setDate]    = useState('');
+  const [date,    setDate]    = useState(todayStr());
   const [data,    setData]    = useState([]);
 
   useEffect(() => {
