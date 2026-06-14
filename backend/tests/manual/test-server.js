@@ -4,17 +4,17 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
-const dashboardRoutes = require('./routes/dashboard');
+const dashboardRoutes = require('../../src/routes/dashboard');
 
 const testApp = express();
 testApp.use(cors());
 testApp.use(express.json());
 testApp.use('/api', dashboardRoutes);
-testApp.use(express.static(path.join(__dirname, '..', 'frontend')));
-testApp.use('/node_modules', express.static(path.join(__dirname, '..', 'frontend', 'node_modules')));
+testApp.use(express.static(path.join(__dirname, '..', '..', '..', 'frontend')));
+testApp.use('/node_modules', express.static(path.join(__dirname, '..', '..', '..', 'frontend', 'node_modules')));
 testApp.use((req, res, next) => {
   if ((req.path.startsWith('/dist/') || req.path.startsWith('/shims/')) && !path.extname(req.path)) {
-    const jsPath = path.join(__dirname, '..', 'frontend', req.path + '.js');
+    const jsPath = path.join(__dirname, '..', '..', '..', 'frontend', req.path + '.js');
     if (fs.existsSync(jsPath)) {
       return res.sendFile(jsPath);
     }
@@ -22,7 +22,7 @@ testApp.use((req, res, next) => {
   next();
 });
 testApp.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, '..', '..', '..', 'frontend', 'index.html'));
 });
 
 const server = testApp.listen(5002, () => {

@@ -20,6 +20,7 @@ body {
   background: var(--white);
   color: var(--blue-900);
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Loading */

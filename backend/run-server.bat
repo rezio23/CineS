@@ -1,3 +1,3 @@
 @echo off
-cd /d C:\Users\Rezio\Desktop\Oracle-Project\cinema-dashboard\backend
-start /min node server.js
+cd /d C:\Users\Rezio\Desktop\Oracle-Project\backend
+start /min node src/server.js

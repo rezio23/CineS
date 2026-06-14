@@ -22,13 +22,13 @@ serves the correct `.js` file for extension-less module requests.
 
 ### 1. Start the Backend Server
 ```
-cd cinema-dashboard/backend
-node server.js
+cd backend
+node src/server.js
 ```
 
 Or use the batch file:
 ```
-cinema-dashboard/backend/start-server.bat
+backend/start-server.bat
 ```
 
 The server will run on http://localhost:5000
@@ -36,7 +36,7 @@ The server will run on http://localhost:5000
 ### 2. Open in Browser
 Navigate to http://localhost:5000
 
-The backend serves the pre-built frontend files from the `dist/` folder.
+The backend serves the pre-built frontend files from the `frontend/dist/` folder.
 
 ## What Works
 
@@ -52,7 +52,7 @@ in `frontend/dist/` are fully functional, so the dev server is not required.
 
 If you need to rebuild the frontend, use Babel directly:
 ```
-cd cinema-dashboard/frontend
+cd frontend
 npx babel src --out-dir dist --extensions .jsx
 ```
 

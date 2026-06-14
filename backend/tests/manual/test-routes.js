@@ -1,6 +1,6 @@
 const http = require('http');
 const express = require('express');
-const dashboardRoutes = require('./routes/dashboard');
+const dashboardRoutes = require('../../src/routes/dashboard');
 
 const app = express();
 app.use('/api', dashboardRoutes);

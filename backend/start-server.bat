@@ -1,4 +1,4 @@
 @echo off
 echo Starting Cinema Dashboard Backend...
-cd /d C:\Users\Rezio\Desktop\Oracle-Project\cinema-dashboard\backend
-node server.js
+cd /d C:\Users\Rezio\Desktop\Oracle-Project\backend
+node src/server.js

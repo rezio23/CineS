@@ -3,8 +3,8 @@ echo ==========================================
 echo   Cinema Dashboard - Starting Server
 echo ==========================================
 echo.
-cd /d C:\Users\Rezio\Desktop\Oracle-Project\cinema-dashboard\backend
-start "Cinema Backend Server" cmd /k "node server.js"
+cd /d C:\Users\Rezio\Desktop\Oracle-Project\backend
+start "Cinema Backend Server" cmd /k "node src/server.js"
 echo Server window opened.
 echo Waiting for server to start...
 timeout /t 3 /nobreak > nul
